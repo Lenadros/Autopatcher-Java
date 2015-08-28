@@ -33,7 +33,7 @@ public class AP_Main implements org.micromanager.api.MMPlugin
     @Override
     public void show() 
     {
-        ScriptI.enableLiveMode(true);
+        //ScriptI.enableLiveMode(true);
         
         //Open main autopatcher frame        
         MainFrame = new AP_Frame();

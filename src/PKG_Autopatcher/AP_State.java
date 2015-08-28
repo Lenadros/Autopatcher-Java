@@ -11,15 +11,13 @@ package PKG_Autopatcher;
  */
 public class AP_State 
 {
-    private String Name;
-    private AP_StateMachine StateMachine;
-    private int lol;
+    protected String Name;
+    protected AP_StateMachine StateMachine;
     
     public AP_State(AP_StateMachine pStateMachine, String pName)
     {
         StateMachine = pStateMachine;
         Name = pName;
-        lol = 0;
         System.out.println("State has been created");
     }
     
@@ -30,6 +28,9 @@ public class AP_State
     
     public boolean Update()
     {
+        //Update function
+        //Return true if Update is to continue
+        //Return false if Update is to stop
         return true;
     }
     
