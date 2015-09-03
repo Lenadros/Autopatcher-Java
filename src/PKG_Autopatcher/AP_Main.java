@@ -38,10 +38,6 @@ public class AP_Main implements org.micromanager.api.MMPlugin
         //Open main autopatcher frame        
         MainFrame = new AP_Frame();
         MainFrame.setVisible(true);
-        
-        //Start state machine thread
-        StateMachine = new AP_StateMachine(MainFrame);
-        StateMachine.start();
     }
 
     @Override

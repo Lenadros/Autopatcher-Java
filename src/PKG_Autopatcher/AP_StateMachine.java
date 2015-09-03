@@ -7,6 +7,7 @@ package PKG_Autopatcher;
 
 import java.awt.FlowLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class AP_StateMachine extends Thread
     
     private SMState CurrentState;
     private ArrayList<AP_State> StateList;
+    private volatile ArrayList<ActionEvent> EventList;
     private int StateCounter;
     
     public AP_StateMachine(AP_Frame pFrame)
@@ -49,7 +51,8 @@ public class AP_StateMachine extends Thread
         LoadDevices();
         
         StateList = new ArrayList<>();
-        StateList.add(new AP_State(this, "Test"));
+        StateList.add(new AP_Calibration(this, "Test"));
+        EventList = new ArrayList<>();
         
         MainFrame.SetStateTitle("Welcome to Autopatcher");
         System.out.println("State Machine Initialized");
@@ -111,6 +114,7 @@ public class AP_StateMachine extends Thread
     {
         while(true)
         {
+            //System.out.println(MainFrame.EventList.size());
             if(Update() == false)
                 break;
         }
@@ -132,11 +136,10 @@ public class AP_StateMachine extends Thread
         }
         else if (CurrentState == SMState.UDPATE)
         {
-            while(StateList.get(StateCounter).Update() == true)
+            if(StateList.get(StateCounter).Update() == false)
             {
-                //Do Something Here If Necessary
+                CurrentState = SMState.END;
             }
-            CurrentState = SMState.END;
         }
         else if(CurrentState == SMState.END)
         {
@@ -145,7 +148,9 @@ public class AP_StateMachine extends Thread
             CurrentState = SMState.START;
         }
         
-        MainFrame.EventQueue.clear();
+        //if(!MainFrame.EventQueue.isEmpty())
+            //MainFrame.EventQueue.clear();
+        
         return true;
     }
     
@@ -183,5 +188,26 @@ public class AP_StateMachine extends Thread
         frame.add(lbl);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+    
+    public void AddEvent(ActionEvent pEvent)
+    {
+        EventList.add(pEvent);
+        System.out.println(EventList.size());
+    }
+    
+    public int GetEventSize()
+    {
+        return EventList.size();
+    }
+    
+    public ActionEvent GetEvent()
+    {
+        return EventList.get(0);
+    }
+    
+    public void RemoveEvent()
+    {
+        EventList.remove(0);
     }
 }
