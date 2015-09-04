@@ -94,13 +94,13 @@ public class AP_StateMachine extends Thread
         {
             //Initialize stage and manipulator/pipet devices
             MMCore.loadDevice("StageXY", "Scientifica", "XYStage");
-            MMCore.loadDevice("StageZ", "Scientifica", "ZStage");
+            //MMCore.loadDevice("StageZ", "Scientifica", "ZStage");
             MMCore.loadDevice("PipetXY", "Scientifica", "XYStage");
-            MMCore.loadDevice("PipetZ", "Scientifica", "ZStage");
+            //MMCore.loadDevice("PipetZ", "Scientifica", "ZStage");
             MMCore.setProperty("StageXY", "Port", "COM3");
-            MMCore.setProperty("StageZ", "Port", "COM3");
-            MMCore.setProperty("PipetXY", "Port", "COM4");
-            MMCore.setProperty("PipetZ", "Port", "COM4");
+            //MMCore.setProperty("StageZ", "Port", "COM3");
+            MMCore.setProperty("PipetXY", "Port", "COM14");
+            //MMCore.setProperty("PipetZ", "Port", "COM4");
             MMCore.initializeAllDevices();
         }
         catch(Exception e)

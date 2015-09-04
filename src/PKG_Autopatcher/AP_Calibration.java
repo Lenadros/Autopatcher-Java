@@ -86,8 +86,8 @@ public class AP_Calibration extends AP_State
                     try
                     {
                         //Zero pippet and stage coordinate system
-                        StateMachine.MMCore.setOrigin("StageZ");
-                        StateMachine.MMCore.setOrigin("PipetZ");
+                        //StateMachine.MMCore.setOrigin("StageZ");
+                        //StateMachine.MMCore.setOrigin("PipetZ");
                         StateMachine.MMCore.setOriginXY("StageXY");
                         StateMachine.MMCore.setOriginXY("PipetXY");
                         
@@ -112,8 +112,8 @@ public class AP_Calibration extends AP_State
                 {
                     try
                     {
-                        XP1 = StateMachine.MMCore.getXPosition("StageXY");
-                        YP1 = StateMachine.MMCore.getYPosition("StageXY");
+                        XP1 = StateMachine.MMCore.getXPosition("PipetXY");
+                        YP1 = StateMachine.MMCore.getYPosition("PipetXY");
                         Theta1 = Math.atan2(YP1, XP1);
                         
                         StateMachine.MMCore.setXYPosition("StageXY", 0, YCalibDist);
@@ -134,8 +134,8 @@ public class AP_Calibration extends AP_State
                 {
                     try
                     {
-                        XP2 = StateMachine.MMCore.getXPosition("StageXY");
-                        YP2 = StateMachine.MMCore.getYPosition("StageXY");
+                        XP2 = StateMachine.MMCore.getXPosition("PipetXY");
+                        YP2 = StateMachine.MMCore.getYPosition("PipetXY");
                         Theta2 = Math.atan2(YP2-YP1, XP2-XP1);
                         
                         CalibTheta = (Theta1 + Theta2)/2;
