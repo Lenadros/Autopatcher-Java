@@ -11,6 +11,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import mmcorej.CMMCore;
+import mmcorej.StrVector;
+import org.micromanager.api.ScriptInterface;
 
 /**
  *
@@ -19,12 +22,15 @@ import java.util.Queue;
 public class AP_Frame extends javax.swing.JFrame {
     
     private AP_StateMachine StateMachine;
+    private CMMCore MMCore;
+    private StrVector DeviceList;
     /**
      * Creates new form AP_Frame
      */
-    public AP_Frame() {
+    public AP_Frame(ScriptInterface pScript) throws Exception {
         initComponents();
-        StateMachine = new AP_StateMachine(this);
+        MMCore = pScript.getMMCore();
+        StateMachine = new AP_StateMachine(this, MMCore);
         StateMachine.start();
     }
 
@@ -176,11 +182,7 @@ public class AP_Frame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AP_Frame().setVisible(true);
-                while(true)
-                {
-                    
-                }
+                
             }
         });
     }

@@ -16,8 +16,9 @@ public class AP_Calibration extends AP_State
     private int YCalibDist;
     private boolean bInputFlag;
     private boolean bXDistSet;
-    private double XP1, YP1, XP2, YP2;
+    private double[] XP1, YP1, XP2, YP2;
     private double Theta1, Theta2, CalibTheta;
+    private String StageLabel, PipetLabel;
     
     public AP_Calibration(AP_StateMachine pStateMachine, String pName) 
     {
@@ -27,6 +28,8 @@ public class AP_Calibration extends AP_State
         YCalibDist = 0;
         bInputFlag = false;
         bXDistSet = false;
+        StageLabel = "XY-Stage";
+        PipetLabel = "XY-Pipet";
     }
     
     
@@ -88,11 +91,11 @@ public class AP_Calibration extends AP_State
                         //Zero pippet and stage coordinate system
                         //StateMachine.MMCore.setOrigin("StageZ");
                         //StateMachine.MMCore.setOrigin("PipetZ");
-                        StateMachine.MMCore.setOriginXY("StageXY");
-                        StateMachine.MMCore.setOriginXY("PipetXY");
+                        StateMachine.MMCore.setOriginXY(StageLabel);
+                        StateMachine.MMCore.setOriginXY(PipetLabel);
                         
                         //Move the stage to user defined X position
-                        StateMachine.MMCore.setXYPosition("StageXY", XCalibDist, 0);
+                        StateMachine.MMCore.setRelativeXYPosition(StageLabel, XCalibDist, 0);
                         
                         //Display message for next step
                         StateMachine.MainFrame.SetMessage("Center the pipet on the screen again and then press proceed.");
@@ -112,11 +115,13 @@ public class AP_Calibration extends AP_State
                 {
                     try
                     {
-                        XP1 = StateMachine.MMCore.getXPosition("PipetXY");
-                        YP1 = StateMachine.MMCore.getYPosition("PipetXY");
+                        StateMachine.MMCore.getXYPosition(PipetLabel, XP1, XP1);
+                        //XP1 = StateMachine.MMCore.getXPosition(PipetLabel);
+                        //YP1 = StateMachine.MMCore.getYPosition(PipetLabel);
                         Theta1 = Math.atan2(YP1, XP1);
+                        StateMachine.MainFrame.SetMessage("XP1: " + XP1 + " YP1: " + YP1);
                         
-                        StateMachine.MMCore.setXYPosition("StageXY", 0, YCalibDist);
+                        StateMachine.MMCore.setRelativeXYPosition(StageLabel, 0, YCalibDist);
                         StepCounter = 3;
                         StateMachine.MainFrame.SetProgressBar(75);
                     }
@@ -127,17 +132,19 @@ public class AP_Calibration extends AP_State
                     }
                     bInputFlag = false;
                 }
-                StateMachine.MainFrame.SetMessage("Center the pipet on the screen again and then press proceed.");
+                //StateMachine.MainFrame.SetMessage("Center the pipet on the screen again and then press proceed.");
                 break;
             case 3:
                 if(bInputFlag)
                 {
                     try
                     {
-                        XP2 = StateMachine.MMCore.getXPosition("PipetXY");
-                        YP2 = StateMachine.MMCore.getYPosition("PipetXY");
+                        XP2 = StateMachine.MMCore.getXPosition(PipetLabel);
+                        YP2 = StateMachine.MMCore.getYPosition(PipetLabel);
                         Theta2 = Math.atan2(YP2-YP1, XP2-XP1);
                         
+                        System.out.println(Theta1);
+                        System.out.println(Theta2);
                         CalibTheta = (Theta1 + Theta2)/2;
                         bInputFlag = false;
                         StateMachine.MainFrame.SetProgressBar(100);
@@ -159,8 +166,9 @@ public class AP_Calibration extends AP_State
     @Override
     public void End()
     {
-        StateMachine.MainFrame.SetMessage("Calibration Done!");
-        System.out.println("Calibration angle was measured as: " + CalibTheta + " Degree(s)");
+        //StateMachine.MainFrame.SetMessage("Calibration Done!");
+        StateMachine.MainFrame.SetMessage("Theta1: " + Theta1 + " Theta2: " + Theta2 + " Angle: " + CalibTheta);
+        //System.out.println("Calibration angle was measured as: " + CalibTheta + " Degree(s)");
     }
     
     public void PollInput()

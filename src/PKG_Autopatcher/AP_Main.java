@@ -5,8 +5,12 @@
  */
 package PKG_Autopatcher;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.micromanager.api.ScriptInterface;
+import org.micromanager.api.MMPlugin;
 import mmcorej.MMCoreJ;
+import org.micromanager.api.MMListenerInterface;
 
 /**
  *
@@ -14,51 +18,58 @@ import mmcorej.MMCoreJ;
  */
 public class AP_Main implements org.micromanager.api.MMPlugin
 {
-    public static String menuName = "Autopatcher";
-    private ScriptInterface ScriptI;
+    public static final String menuName = "Autopatcher";
+    public static final String tooltipDescription = "Autopatching software";
+    private ScriptInterface MMScript;
     private AP_Frame MainFrame;
-    private AP_StateMachine StateMachine;
     
     @Override
     public void dispose() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     @Override
     public void setApp(ScriptInterface si) 
     {
-        ScriptI = si;
+        MMScript = si;
+        if(MainFrame == null)
+        {
+            try {
+                MainFrame = new AP_Frame(MMScript);
+            } catch (Exception ex) {
+                Logger.getLogger(AP_Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            MainFrame.setBackground(MMScript.getBackgroundColor());
+            MMScript.addMMBackgroundListener(MainFrame);
+            //si.addMMListener((MMListenerInterface) MainFrame);
+        }
+        MainFrame.setVisible(true);
     }
 
     @Override
     public void show() 
     {
-        //ScriptI.enableLiveMode(true);
-        
-        //Open main autopatcher frame        
-        MainFrame = new AP_Frame();
-        MainFrame.setVisible(true);
+        String ig = "Autopatcher";
     }
 
     @Override
     public String getDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "Autopatching software";
     }
 
     @Override
     public String getInfo() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "Autopatching software";
     }
 
     @Override
     public String getVersion() {
         return "1.0.0";
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public String getCopyright() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "Precision Biosystem Laboratory, 2015";
     }
     
 }

@@ -15,10 +15,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import mmcorej.CMMCore;
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
+import mmcorej.StrVector;
+//import org.opencv.core.Core;
+//import org.opencv.core.CvType;
+//import org.opencv.core.Mat;
+//import org.opencv.imgproc.Imgproc;
 
 /**
  *
@@ -40,15 +41,16 @@ public class AP_StateMachine extends Thread
     private ArrayList<AP_State> StateList;
     private volatile ArrayList<ActionEvent> EventList;
     private int StateCounter;
+    private StrVector DeviceLabels;
     
-    public AP_StateMachine(AP_Frame pFrame)
+    public AP_StateMachine(AP_Frame pFrame, CMMCore pMMCore)
     {
         MainFrame = pFrame;
         CurrentState = SMState.START;
         StateCounter = 0;
         
-        MMCore = new CMMCore();
-        LoadDevices();
+        MMCore = pMMCore;
+        //LoadDevices();
         
         StateList = new ArrayList<>();
         StateList.add(new AP_Calibration(this, "Test"));
@@ -56,57 +58,44 @@ public class AP_StateMachine extends Thread
         
         MainFrame.SetStateTitle("Welcome to Autopatcher");
         System.out.println("State Machine Initialized");
+        
+        DeviceLabels = MMCore.getLoadedDevices();
+        System.out.println("Total Devices: " + DeviceLabels.size());
+        for(int i = 0; i < DeviceLabels.size(); i++)
+            System.out.println(DeviceLabels.get(i));
         /*
         try
         {
-            MMCore.loadDevice("Camera", "DemoCamera", "DCam");
-            MMCore.initializeAllDevices();
-            MMCore.setExposure(70);
+            MMCore.loadDevice("StageXY", "Scientifica", "XYStage");
+            MMCore.initializeDevice("StageXY");
+            //MMCore.setExposure(70);
             
-            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+            //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
             
         }
         catch(Exception e)
         {
             System.out.println("Exception: " + e.getMessage());
         }
-        
+        /*
             try
             {
-            MMCore.snapImage();
-            byte[] image = (byte[])MMCore.getImage();
-            Mat MatImage = new Mat((int)MMCore.getImageHeight(), (int)MMCore.getImageWidth(),CvType.CV_8U);// CvType.CV_8UC1);
-            //Mat FinalMat = new Mat(MatImage.rows(), MatImage.cols(), MatImage.type());
-            MatImage.put(0, 0, image);
-            //Imgproc.equalizeHist(MatImage, FinalMat);
-            displayImage(Mat2BufferedImage(MatImage));
+                MMCore.snapImage();
+                byte[] image = (byte[])MMCore.getImage();
+                //Mat MatImage = new Mat((int)MMCore.getImageHeight(), (int)MMCore.getImageWidth(),CvType.CV_8U);// CvType.CV_8UC1);
+                //Mat FinalMat = new Mat(MatImage.rows(), MatImage.cols(), MatImage.type());
+                //MatImage.put(0, 0, image);
+                //Imgproc.equalizeHist(MatImage, FinalMat);
+                //displayImage(Mat2BufferedImage(MatImage));
+                long width = MMCore.getImageWidth();
+                long height = MMCore.getImageHeight();
+                System.out.println(width + ":" + height);
             }
             catch(Exception e)
             {
                 System.out.println("Exception: " + e.getMessage());
             }*/
         
-    }
-    
-    public void LoadDevices()
-    {
-        try
-        {
-            //Initialize stage and manipulator/pipet devices
-            MMCore.loadDevice("StageXY", "Scientifica", "XYStage");
-            //MMCore.loadDevice("StageZ", "Scientifica", "ZStage");
-            MMCore.loadDevice("PipetXY", "Scientifica", "XYStage");
-            //MMCore.loadDevice("PipetZ", "Scientifica", "ZStage");
-            MMCore.setProperty("StageXY", "Port", "COM3");
-            //MMCore.setProperty("StageZ", "Port", "COM3");
-            MMCore.setProperty("PipetXY", "Port", "COM14");
-            //MMCore.setProperty("PipetZ", "Port", "COM4");
-            MMCore.initializeAllDevices();
-        }
-        catch(Exception e)
-        {
-            System.out.println("Exception: " + e.getMessage());
-        }
     }
     
     @Override
@@ -153,7 +142,7 @@ public class AP_StateMachine extends Thread
         
         return true;
     }
-    
+    /*
     public BufferedImage Mat2BufferedImage(Mat m)
     {
     // source: http://answers.opencv.org/question/10344/opencv-java-load-image-to-gui/
@@ -188,7 +177,7 @@ public class AP_StateMachine extends Thread
         frame.add(lbl);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
+    }*/
     
     public void AddEvent(ActionEvent pEvent)
     {
