@@ -59,10 +59,6 @@ public class AP_StateMachine extends Thread
         MainFrame.SetStateTitle("Welcome to Autopatcher");
         System.out.println("State Machine Initialized");
         
-        DeviceLabels = MMCore.getLoadedDevices();
-        System.out.println("Total Devices: " + DeviceLabels.size());
-        for(int i = 0; i < DeviceLabels.size(); i++)
-            System.out.println(DeviceLabels.get(i));
         /*
         try
         {

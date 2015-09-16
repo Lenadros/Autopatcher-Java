@@ -5,6 +5,9 @@
  */
 package PKG_Autopatcher;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Leonard
@@ -14,11 +17,11 @@ public class AP_Calibration extends AP_State
     private int StepCounter;
     private int XCalibDist;
     private int YCalibDist;
-    private boolean bInputFlag;
+    private boolean bInputFlag, bZeroInFlag;
     private boolean bXDistSet;
-    private double[] XP1, YP1, XP2, YP2;
+    private double XP1, YP1, XP2, YP2, XPipetStart, YPipetStart;
     private double Theta1, Theta2, CalibTheta;
-    private String StageLabel, PipetLabel;
+    private String XYStage, XYPipet, ZStage, ZPipet;
     
     public AP_Calibration(AP_StateMachine pStateMachine, String pName) 
     {
@@ -26,10 +29,15 @@ public class AP_Calibration extends AP_State
         StepCounter = 0;
         XCalibDist = 0;
         YCalibDist = 0;
+        XPipetStart = 0;
+        YPipetStart = 0;
         bInputFlag = false;
+        bZeroInFlag = false;
         bXDistSet = false;
-        StageLabel = "XY-Stage";
-        PipetLabel = "XY-Pipet";
+        XYStage = "XY-Stage";
+        XYPipet = "XY-Pipet";
+        ZStage = "Z-Stage";
+        ZPipet = "Z-Pipet";
     }
     
     
@@ -91,11 +99,14 @@ public class AP_Calibration extends AP_State
                         //Zero pippet and stage coordinate system
                         //StateMachine.MMCore.setOrigin("StageZ");
                         //StateMachine.MMCore.setOrigin("PipetZ");
-                        StateMachine.MMCore.setOriginXY(StageLabel);
-                        StateMachine.MMCore.setOriginXY(PipetLabel);
+                        //StateMachine.MMCore.setOriginXY(XYStage);
+                        XPipetStart = StateMachine.MMCore.getXPosition(XYPipet);
+                        YPipetStart = StateMachine.MMCore.getYPosition(XYPipet);
+                        Logger.getLogger(AP_Calibration.class.getName()).log(Level.SEVERE, "XPipetStart: " + XPipetStart + " YPipetStart: " + YPipetStart);
+                        //StateMachine.MMCore.setOriginXY(XYPipet);
                         
                         //Move the stage to user defined X position
-                        StateMachine.MMCore.setRelativeXYPosition(StageLabel, XCalibDist, 0);
+                        StateMachine.MMCore.setRelativeXYPosition(XYStage, XCalibDist, 0);
                         
                         //Display message for next step
                         StateMachine.MainFrame.SetMessage("Center the pipet on the screen again and then press proceed.");
@@ -115,13 +126,19 @@ public class AP_Calibration extends AP_State
                 {
                     try
                     {
-                        StateMachine.MMCore.getXYPosition(PipetLabel, XP1, XP1);
-                        //XP1 = StateMachine.MMCore.getXPosition(PipetLabel);
-                        //YP1 = StateMachine.MMCore.getYPosition(PipetLabel);
+                        //StateMachine.MMCore.getXYPosition(PipetLabel, XP1, XP1);
+                        XP1 = StateMachine.MMCore.getXPosition(XYPipet);
+                        YP1 = StateMachine.MMCore.getYPosition(XYPipet);
+                        Logger.getLogger(AP_Calibration.class.getName()).log(Level.SEVERE, "XP1: " + XP1 + " YP1: " + YP1);
+                        XP1 = XP1 - XPipetStart;
+                        YP1 = YP1 - YPipetStart;
+                        Logger.getLogger(AP_Calibration.class.getName()).log(Level.SEVERE, "XP1: " + XP1 + " YP1: " + YP1);
                         Theta1 = Math.atan2(YP1, XP1);
-                        StateMachine.MainFrame.SetMessage("XP1: " + XP1 + " YP1: " + YP1);
+                        Theta1 = Theta1 + Math.PI;
+                        Logger.getLogger(AP_Calibration.class.getName()).log(Level.SEVERE, "Theta1: " + Theta1);
+                        //StateMachine.MainFrame.SetMessage("XP1: " + XP1 + " YP1: " + YP1);
                         
-                        StateMachine.MMCore.setRelativeXYPosition(StageLabel, 0, YCalibDist);
+                        StateMachine.MMCore.setRelativeXYPosition(XYStage, 0, YCalibDist);
                         StepCounter = 3;
                         StateMachine.MainFrame.SetProgressBar(75);
                     }
@@ -139,12 +156,17 @@ public class AP_Calibration extends AP_State
                 {
                     try
                     {
-                        XP2 = StateMachine.MMCore.getXPosition(PipetLabel);
-                        YP2 = StateMachine.MMCore.getYPosition(PipetLabel);
+                        XP2 = StateMachine.MMCore.getXPosition(XYPipet);
+                        YP2 = StateMachine.MMCore.getYPosition(XYPipet);
+                        XP2 = XP2 - XPipetStart;
+                        YP2 = YP2 - YPipetStart;
+                        Logger.getLogger(AP_Calibration.class.getName()).log(Level.SEVERE, "XP2: " + XP2 + " YP2: " + YP2);
                         Theta2 = Math.atan2(YP2-YP1, XP2-XP1);
+                        Theta2 = Theta2 - Math.PI/2;
+                        Logger.getLogger(AP_Calibration.class.getName()).log(Level.SEVERE, "Theta2: " + Theta2);
                         
-                        System.out.println(Theta1);
-                        System.out.println(Theta2);
+                        //System.out.println(Theta1);
+                        //System.out.println(Theta2);
                         CalibTheta = (Theta1 + Theta2)/2;
                         bInputFlag = false;
                         StateMachine.MainFrame.SetProgressBar(100);
@@ -180,6 +202,11 @@ public class AP_Calibration extends AP_State
             if(StateMachine.GetEvent().getActionCommand() == "Proceed" && !bInputFlag)
             {
                 bInputFlag = true;
+                StateMachine.RemoveEvent();
+            }
+            else if(StateMachine.GetEvent().getActionCommand() == "Zero" && !bZeroInFlag)
+            {
+                bZeroInFlag = true;
                 StateMachine.RemoveEvent();
             }
             else
