@@ -51,6 +51,7 @@ public class AP_PipetSetup extends AP_State
                 CellX = StateMachine.MMCore.getXPosition("XY-Stage");
                 CellY = StateMachine.MMCore.getYPosition("XY-Stage");
                 CellZ = StateMachine.MMCore.getPosition("Z-Stage");
+                Logger.getLogger(AP_PipetSetup.class.getName()).log(Level.SEVERE, "(" + CellX + "," + CellY + "," + CellZ + ")");
                 
                 //Rotation transform from stage coordinates to pipet coordinates
                 double Theta = Math.atan2(CellY, CellX);
@@ -77,11 +78,12 @@ public class AP_PipetSetup extends AP_State
             catch(Exception e)
             {
                 Logger.getLogger(AP_PipetSetup.class.getName()).log(Level.SEVERE, e.getMessage());
-                return false;
+                bInputFlag = false;
+                return true;
             }
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
     
     @Override

@@ -55,7 +55,7 @@ public class AP_StateMachine extends Thread
         //LoadDevices();
         
         StateList = new ArrayList<>();
-        StateList.add(new AP_Calibration(this, "Test"));
+        //StateList.add(new AP_Calibration(this, "Test"));
         StateList.add(new AP_PipetSetup(this, "SelectCell"));
         EventList = new ArrayList<>();
         
