@@ -191,6 +191,7 @@ public class AP_Calibration extends AP_State
         //StateMachine.MainFrame.SetMessage("Calibration Done!");
         StateMachine.MainFrame.SetMessage("Theta1: " + Theta1 + " Theta2: " + Theta2 + " Angle: " + CalibTheta);
         //System.out.println("Calibration angle was measured as: " + CalibTheta + " Degree(s)");
+        StateMachine.CalibAngle = CalibTheta;
     }
     
     public void PollInput()
@@ -202,11 +203,6 @@ public class AP_Calibration extends AP_State
             if(StateMachine.GetEvent().getActionCommand() == "Proceed" && !bInputFlag)
             {
                 bInputFlag = true;
-                StateMachine.RemoveEvent();
-            }
-            else if(StateMachine.GetEvent().getActionCommand() == "Zero" && !bZeroInFlag)
-            {
-                bZeroInFlag = true;
                 StateMachine.RemoveEvent();
             }
             else

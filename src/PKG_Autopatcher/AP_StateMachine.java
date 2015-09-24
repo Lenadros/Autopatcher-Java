@@ -37,6 +37,8 @@ public class AP_StateMachine extends Thread
     public CMMCore MMCore;
     public AP_Frame MainFrame;
     
+    public double CalibAngle;
+    
     private SMState CurrentState;
     private ArrayList<AP_State> StateList;
     private volatile ArrayList<ActionEvent> EventList;
@@ -54,6 +56,7 @@ public class AP_StateMachine extends Thread
         
         StateList = new ArrayList<>();
         StateList.add(new AP_Calibration(this, "Test"));
+        StateList.add(new AP_PipetSetup(this, "SelectCell"));
         EventList = new ArrayList<>();
         
         MainFrame.SetStateTitle("Welcome to Autopatcher");
