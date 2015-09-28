@@ -56,7 +56,9 @@ public class AP_StateMachine extends Thread
         
         StateList = new ArrayList<>();
         //StateList.add(new AP_Calibration(this, "Test"));
-        StateList.add(new AP_PipetSetup(this, "SelectCell"));
+        CalibAngle = 0.08668591975467221;
+        //StateList.add(new AP_PipetteSetup(this, "SelectCell"));
+        StateList.add(new AP_Descend(this, "Descend"));
         EventList = new ArrayList<>();
         
         MainFrame.SetStateTitle("Welcome to Autopatcher");

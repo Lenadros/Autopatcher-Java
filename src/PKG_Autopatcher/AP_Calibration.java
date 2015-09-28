@@ -35,9 +35,9 @@ public class AP_Calibration extends AP_State
         bZeroInFlag = false;
         bXDistSet = false;
         XYStage = "XY-Stage";
-        XYPipet = "XY-Pipet";
+        XYPipet = "XY-Pipette";
         ZStage = "Z-Stage";
-        ZPipet = "Z-Pipet";
+        ZPipet = "Z-Pipette";
     }
     
     
@@ -170,6 +170,7 @@ public class AP_Calibration extends AP_State
                         CalibTheta = (Theta1 + Theta2)/2;
                         bInputFlag = false;
                         StateMachine.MainFrame.SetProgressBar(100);
+                        Logger.getLogger(AP_Calibration.class.getName()).log(Level.SEVERE, "CalibTheta: " + CalibTheta);
                         return false;
                     }
                     catch(Exception e)
