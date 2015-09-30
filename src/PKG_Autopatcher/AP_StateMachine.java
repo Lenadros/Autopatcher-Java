@@ -38,6 +38,7 @@ public class AP_StateMachine extends Thread
     public AP_Frame MainFrame;
     
     public double CalibAngle;
+    public double DescendDist;
     
     private SMState CurrentState;
     private ArrayList<AP_State> StateList;
@@ -52,12 +53,14 @@ public class AP_StateMachine extends Thread
         StateCounter = 0;
         
         MMCore = pMMCore;
-        //LoadDevices();
+        
+        CalibAngle = 0.08668591975467221;
+        DescendDist = 0;
         
         StateList = new ArrayList<>();
         //StateList.add(new AP_Calibration(this, "Test"));
-        CalibAngle = 0.08668591975467221;
-        //StateList.add(new AP_PipetteSetup(this, "SelectCell"));
+        
+        StateList.add(new AP_PipetteSetup(this, "SelectCell"));
         StateList.add(new AP_Descend(this, "Descend"));
         EventList = new ArrayList<>();
         

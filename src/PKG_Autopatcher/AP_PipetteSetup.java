@@ -92,7 +92,7 @@ public class AP_PipetteSetup extends AP_State
                     {
                         ZSlice = StateMachine.MMCore.getPosition("Z-Stage");
                         StateMachine.MainFrame.SetDataMessage("Top of Slice: Z = " + ZSlice);
-                        StateMachine.MainFrame.SetMessage("Please enter command for device approach.");
+                        StateMachine.MainFrame.SetMessage("Press Proceed to Park Pipette.");
                         StepCounter = 3;
                     }
                     catch(Exception e)
@@ -103,21 +103,6 @@ public class AP_PipetteSetup extends AP_State
                     bInputFlag = false;
                 break;
                 case 3:
-                    try
-                    {
-                        ApproachCommand = StateMachine.MainFrame.ReadCalibrationField();
-                        StateMachine.MainFrame.SetDataMessage("Approach Command: " + ApproachCommand);
-                        StateMachine.MainFrame.SetMessage("Press Proceed to Park Pipette.");
-                        StepCounter = 4;
-                    }
-                    catch(Exception e)
-                    {
-                        Logger.getLogger(AP_PipetteSetup.class.getName()).log(Level.SEVERE, e.getMessage());
-                        return true;
-                    }
-                    bInputFlag = false;
-                break;
-                case 4:
                     try
                     {
                         //Rotation transform from stage coordinates to pipet coordinates
@@ -139,6 +124,18 @@ public class AP_PipetteSetup extends AP_State
                         DistToDescend = Math.sqrt(Math.pow((ScaledX - PipetX),2) + Math.pow((ScaledY - PipetY), 2) + Math.pow(Z_CP - PipetZ, 2));
                         
                         Logger.getLogger(AP_PipetteSetup.class.getName()).log(Level.SEVERE, "Pipette Position: (" + PipetX + "," + PipetY + "," + PipetZ + ")");
+                        StepCounter = 4;
+                    }
+                    catch(Exception e)
+                    {
+                        Logger.getLogger(AP_PipetteSetup.class.getName()).log(Level.SEVERE, e.getMessage());
+                        bInputFlag = false;
+                        return true;
+                    }
+                case 4:
+                    try
+                    {
+                        StateMachine.MMCore.setRelativeXYPosition("XY-Pipette", PipetX, PipetY);
                         StepCounter = 5;
                     }
                     catch(Exception e)
@@ -147,20 +144,8 @@ public class AP_PipetteSetup extends AP_State
                         bInputFlag = false;
                         return true;
                     }
-                case 5:
-                    try
-                    {
-                        StateMachine.MMCore.setRelativeXYPosition("XY-Pipette", PipetX, PipetY);
-                        StepCounter = 6;
-                    }
-                    catch(Exception e)
-                    {
-                        Logger.getLogger(AP_PipetteSetup.class.getName()).log(Level.SEVERE, e.getMessage());
-                        bInputFlag = false;
-                        return true;
-                    }
                 break;
-                case 6:
+                case 5:
                     try
                     {
                         if(!StateMachine.MMCore.deviceBusy("XY-Pipette"))
@@ -184,7 +169,7 @@ public class AP_PipetteSetup extends AP_State
     @Override
     public void End()
     {
-        
+        StateMachine.DescendDist = DistToDescend;
     }
     
     public void PollInput()
