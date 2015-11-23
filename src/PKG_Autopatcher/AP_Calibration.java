@@ -165,13 +165,12 @@ public class AP_Calibration extends AP_State
                         Theta2 = Theta2 - Math.PI/2;
                         Logger.getLogger(AP_Calibration.class.getName()).log(Level.SEVERE, "Theta2: " + Theta2);
                         
-                        //System.out.println(Theta1);
-                        //System.out.println(Theta2);
                         CalibTheta = (Theta1 + Theta2)/2;
                         bInputFlag = false;
                         StateMachine.MainFrame.SetProgressBar(100);
                         Logger.getLogger(AP_Calibration.class.getName()).log(Level.SEVERE, "CalibTheta: " + CalibTheta);
-                        return false;
+                        StateMachine.MainFrame.SetMessage("Calibration angle is: " + CalibTheta);
+                        StepCounter = 4;
                     }
                     catch(Exception e)
                     {
@@ -180,7 +179,13 @@ public class AP_Calibration extends AP_State
                         bInputFlag = false;
                     }
                 }
-                break;
+            break;
+            case 4:
+                if(bInputFlag)
+                {
+                    return false;
+                }
+            break;
         }
         
         return true;
@@ -190,7 +195,7 @@ public class AP_Calibration extends AP_State
     public void End()
     {
         //StateMachine.MainFrame.SetMessage("Calibration Done!");
-        StateMachine.MainFrame.SetMessage("Theta1: " + Theta1 + " Theta2: " + Theta2 + " Angle: " + CalibTheta);
+        StateMachine.MainFrame.SetMessage("Calibration angle is: " + CalibTheta);
         //System.out.println("Calibration angle was measured as: " + CalibTheta + " Degree(s)");
         StateMachine.CalibAngle = CalibTheta;
     }

@@ -34,9 +34,12 @@ public class AP_Main implements org.micromanager.api.MMPlugin
         MMScript = si;
         if(MainFrame == null)
         {
-            try {
+            try 
+            {
                 MainFrame = new AP_Frame(MMScript);
-            } catch (Exception ex) {
+            } 
+            catch (Exception ex) 
+            {
                 Logger.getLogger(AP_Main.class.getName()).log(Level.SEVERE, null, ex);
             }
             MainFrame.setBackground(MMScript.getBackgroundColor());

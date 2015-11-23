@@ -59,47 +59,14 @@ public class AP_StateMachine extends Thread
         
         StateList = new ArrayList<>();
         //StateList.add(new AP_Calibration(this, "Test"));
-        
-        StateList.add(new AP_PipetteSetup(this, "SelectCell"));
-        StateList.add(new AP_Descend(this, "Descend"));
+        StateList.add(new AP_DAQIO(this, "DAQ IO"));
+        //StateList.add(new AP_Calibration(this, "Calibration"));
+        //StateList.add(new AP_PipetteSetup(this, "SelectCell"));
+        //StateList.add(new AP_Descend(this, "Descend"));
         EventList = new ArrayList<>();
         
         MainFrame.SetStateTitle("Welcome to Autopatcher");
         System.out.println("State Machine Initialized");
-        
-        /*
-        try
-        {
-            MMCore.loadDevice("StageXY", "Scientifica", "XYStage");
-            MMCore.initializeDevice("StageXY");
-            //MMCore.setExposure(70);
-            
-            //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-            
-        }
-        catch(Exception e)
-        {
-            System.out.println("Exception: " + e.getMessage());
-        }
-        /*
-            try
-            {
-                MMCore.snapImage();
-                byte[] image = (byte[])MMCore.getImage();
-                //Mat MatImage = new Mat((int)MMCore.getImageHeight(), (int)MMCore.getImageWidth(),CvType.CV_8U);// CvType.CV_8UC1);
-                //Mat FinalMat = new Mat(MatImage.rows(), MatImage.cols(), MatImage.type());
-                //MatImage.put(0, 0, image);
-                //Imgproc.equalizeHist(MatImage, FinalMat);
-                //displayImage(Mat2BufferedImage(MatImage));
-                long width = MMCore.getImageWidth();
-                long height = MMCore.getImageHeight();
-                System.out.println(width + ":" + height);
-            }
-            catch(Exception e)
-            {
-                System.out.println("Exception: " + e.getMessage());
-            }*/
-        
     }
     
     @Override
